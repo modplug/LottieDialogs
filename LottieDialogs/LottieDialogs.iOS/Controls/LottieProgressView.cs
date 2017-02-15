@@ -22,11 +22,13 @@ namespace LottieDialogs.iOS.Controls
                 ContentMode = UIViewContentMode.ScaleAspectFit,
                 LoopAnimation =  _isIndeterminate
             };
+            Add(_animationView);
         }
 
         public bool HidesWhenStopped { get; set; }
         public void StartAnimating()
         {
+            Frame = _frame;
             _animationView.Frame = _frame;
             _animationView.ContentStretch = _frame;
             _animationView.ContentMode = UIViewContentMode.ScaleAspectFit;
