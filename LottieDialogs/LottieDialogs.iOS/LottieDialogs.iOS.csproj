@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Controls\LottieProgressView.cs" />
     <Compile Include="LottieDialog.cs" />
-    <Compile Include="LottieDialogView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

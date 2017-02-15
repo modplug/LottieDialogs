@@ -89,6 +89,7 @@
     <None Include="GettingStarted.Xamarin" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <BundleResource Include="TwitterHeart.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewController.designer.cs">
@@ -108,6 +109,10 @@
     <Content Include="Entitlements.plist" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LottieDialogs.Abstractions\LottieDialogs.Abstractions.csproj">
+      <Project>{B4CD703F-8D88-4B60-A751-A50596FF3103}</Project>
+      <Name>LottieDialogs.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\LottieDialogs.iOS\LottieDialogs.iOS.csproj">
       <Project>{3FC2A5D6-447A-4B3C-9F7F-4E07B5E78E7F}</Project>
       <Name>LottieDialogs.iOS</Name>
