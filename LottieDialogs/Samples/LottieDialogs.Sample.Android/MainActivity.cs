@@ -33,7 +33,7 @@ namespace LottieDialogs.Sample.Android
 
             for (int i = 0; i <= 100; i++)
             {
-                LottieDialogs.Android.LottieDialog.Instance.ShowProgressDialog(this, stream2, MaskType.Clear, i, false, StatusTextPosition.Bottom, "Progress: " + i + "%", "");
+                LottieDialogs.Android.LottieDialog.Instance.ShowProgressDialog(this, stream2, MaskType.Black, i, false, StatusTextPosition.Top, "Progress: " + i + "%", "");
                 await Task.Delay(50);
                 if (i == 100)
                 {

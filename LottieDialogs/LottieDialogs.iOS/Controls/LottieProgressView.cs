@@ -53,7 +53,7 @@ namespace LottieDialogs.iOS.Controls
             }
         }
 
-        public bool IsAnimating{ get; private set; }
+        public bool IsAnimating { get; private set; }
 
         public void StopAnimating()
         {

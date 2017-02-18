@@ -7,18 +7,18 @@
     android:clickable="true"
     android:background="@drawable/roundedbg"
     android:padding="16dp">
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimationView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal|center_vertical" />
     <TextView
         android:text="Loading..."
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewStatus"
+        android:id="@+id/top_textViewStatus"
         android:gravity="center_horizontal"
         android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal|center_vertical" />
 </LinearLayout>

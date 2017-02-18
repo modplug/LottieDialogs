@@ -59,7 +59,26 @@ namespace LottieDialogs.Android
                         CurrentDialog.Window.SetBackgroundDrawable(new ColorDrawable(Color.Transparent));
 
                         var inflater = LayoutInflater.FromContext(context);
-                        var view = inflater.Inflate(Resource.Layout.animatedprogress, null);
+
+                        View view;
+                        switch (statusTextPosition)
+                        {
+                            case StatusTextPosition.Bottom:
+                                view = inflater.Inflate(Resource.Layout.bottom_header_progress_dialog, null);
+                                _statusView = view.FindViewById<TextView>(Resource.Id.bottom_textViewStatus);
+                                break;
+                            case StatusTextPosition.Center:
+                                view = inflater.Inflate(Resource.Layout.center_header_progress_dialog, null);
+                                _statusView = view.FindViewById<TextView>(Resource.Id.center_textViewStatus);
+                                break;
+                            case StatusTextPosition.Top:
+                                view = inflater.Inflate(Resource.Layout.top_header_progress_dialog, null);
+                                _statusView = view.FindViewById<TextView>(Resource.Id.top_textViewStatus);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(statusTextPosition), statusTextPosition, null);
+                        }
+                        
 
                         if (clickCallback != null)
                             view.Click += (sender, e) => clickCallback();
@@ -80,10 +99,27 @@ namespace LottieDialogs.Android
                             Console.WriteLine(e);
                         }
 
-                        _statusView = view.FindViewById<TextView>(Resource.Id.textViewStatus);
-
-                        if (maskType != MaskType.Black)
-                            view.SetBackgroundResource(Resource.Drawable.roundedbgdark);
+                        switch (maskType)
+                        {
+                            case MaskType.None:
+                                view.SetBackgroundResource(Resource.Drawable.roundedbgdark);
+                                _statusView.SetTextColor(Color.White);
+                                break;
+                            case MaskType.Clear:
+                                view.SetBackgroundColor(Color.Transparent);
+                                _statusView.SetTextColor(Color.Black);
+                                break;
+                            case MaskType.Black:
+                                view.SetBackgroundResource(Resource.Drawable.roundedbg_white);
+                                _statusView.SetTextColor(Color.Black);
+                                break;
+                            case MaskType.Gradient:
+                                view.SetBackgroundResource(Resource.Drawable.roundedbg_white);
+                                _statusView.SetTextColor(Color.Black);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(maskType), maskType, null);
+                        }
 
                         if (_statusView != null)
                         {

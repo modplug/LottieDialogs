@@ -86,7 +86,9 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <BundleResource Include="allboard.json" />
     <None Include="GettingStarted.Xamarin" />
+    <BundleResource Include="Hamburger.json" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <BundleResource Include="TwitterHeart.json" />

@@ -56,7 +56,10 @@ namespace LottieDialogs.Android
 			public static int roundedbg = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public static int roundedbgdark = 2130837505;
+			public static int roundedbg_white = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public static int roundedbgdark = 2130837506;
 			
 			static Drawable()
 			{
@@ -71,14 +74,20 @@ namespace LottieDialogs.Android
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f040002
+			public static int bottom_textViewStatus = 2130968578;
+			
+			// aapt resource value: 0x7f040003
+			public static int center_textViewStatus = 2130968579;
+			
 			// aapt resource value: 0x7f040001
 			public static int lottieAnimationView = 2130968577;
 			
 			// aapt resource value: 0x7f040000
 			public static int lottie_layer_name = 2130968576;
 			
-			// aapt resource value: 0x7f040002
-			public static int textViewStatus = 2130968578;
+			// aapt resource value: 0x7f040004
+			public static int top_textViewStatus = 2130968580;
 			
 			static Id()
 			{
@@ -94,7 +103,13 @@ namespace LottieDialogs.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public static int animatedprogress = 2130903040;
+			public static int bottom_header_progress_dialog = 2130903040;
+			
+			// aapt resource value: 0x7f030001
+			public static int center_header_progress_dialog = 2130903041;
+			
+			// aapt resource value: 0x7f030002
+			public static int top_header_progress_dialog = 2130903042;
 			
 			static Layout()
 			{

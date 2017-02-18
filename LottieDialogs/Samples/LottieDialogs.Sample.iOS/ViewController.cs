@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreGraphics;
@@ -12,8 +13,13 @@ namespace LottieDialogs.Sample.iOS
     public partial class ViewController : UIViewController
     {
         private CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly List<string> _animations;
+        private readonly Random _random;
+
         public ViewController(IntPtr handle) : base(handle)
         {
+            _animations = new List<string> {"allboard.json", "hamburger.json", "twitterheart.json"};
+            _random = new Random();
         }
 
         public override void ViewDidLoad()
@@ -28,8 +34,9 @@ namespace LottieDialogs.Sample.iOS
 
         private async void ShowDialog()
         {
-            var url = NSUrl.FromFilename("TwitterHeart.json");
-            await LottieDialog.Instance.ShowDialog(url, MaskType.Clear, 0, false, StatusTextPosition.Center, "Progress: " + 0 + "%", "", TimeSpan.FromSeconds(2), CancelCallback);
+            var index = _random.Next(0, _animations.Count);
+            var url = NSUrl.FromFilename(_animations[index]);
+            await LottieDialog.Instance.ShowDialog(url, MaskType.Black, 0, true, StatusTextPosition.Bottom, "Progress: " + 0 + "%", "", null, CancelCallback);
             for (var i = 0; i <= 100; i++)
             {
                 if (_cts.IsCancellationRequested)

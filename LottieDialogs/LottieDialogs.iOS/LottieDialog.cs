@@ -153,7 +153,10 @@ namespace LottieDialogs.iOS
             BeginInvokeOnMainThread(() =>
             {
                 _statusLabel.Text = status;
-                _animationView.AnimationProgress = progress;
+                if (!_isIndeterminate)
+                {
+                    _animationView.AnimationProgress = progress;
+                }
             });
         }
     }

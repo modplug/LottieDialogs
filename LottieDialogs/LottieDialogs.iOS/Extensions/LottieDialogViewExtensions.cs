@@ -8,7 +8,7 @@ namespace LottieDialogs.iOS.Extensions
 {
     public static class LottieDialogViewExtensions
     {
-        private static readonly UIColor SemiTransparentBlack =  new UIColor(0, 0, 0, 0.7f);
+        private static readonly UIColor SemiTransparentBlack =  new UIColor(0, 0, 0, 0.8f);
         private static readonly float CornerRadius = 15f;
         public static UIView TopHeaderDialog(this UIView parent, UIView backgroundView, LAAnimationView animationView, UILabel statusLabel, MaskType maskType)
         {
@@ -34,7 +34,7 @@ namespace LottieDialogs.iOS.Extensions
                 statusLabel.Width().LessThanOrEqualTo(150),
                 statusLabel.Height().LessThanOrEqualTo(40),
                 statusLabel.WithSameCenterX(backgroundView),
-                statusLabel.AtTopOf(backgroundView, 10),
+                statusLabel.AtTopOf(backgroundView, 15),
                 animationView.WithSameCenterX(backgroundView),
                 animationView.Height().EqualTo(75),
                 animationView.Width().EqualTo(75),
@@ -67,7 +67,7 @@ namespace LottieDialogs.iOS.Extensions
 
             backgroundView.AddConstraints(new FluentLayout[]
             {
-                animationView.AtTopOf(backgroundView, 10),
+                animationView.AtTopOf(backgroundView, 15),
                 animationView.WithSameCenterX(backgroundView),
                 animationView.Height().EqualTo(75),
                 animationView.Width().EqualTo(75),
@@ -113,7 +113,7 @@ namespace LottieDialogs.iOS.Extensions
             return parent;
         }
 
-        public static UIColor GetBackgroundColorFromMaskType(MaskType maskType)
+        private static UIColor GetBackgroundColorFromMaskType(MaskType maskType)
         {
             switch (maskType)
             {
