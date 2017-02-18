@@ -1,43 +1,64 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Airbnb.Lottie;
-using Cirrious.FluentLayouts.Touch;
 using Foundation;
 using LottieDialogs.Abstractions;
+using LottieDialogs.iOS.Extensions;
 using UIKit;
 
 namespace LottieDialogs.iOS
 {
     public class LottieDialog : UIViewController
     {
-        public static LottieDialog Instance => _dialog ?? (_dialog = new LottieDialog());
-
-        private LAAnimationView _animationView;
         private static LottieDialog _dialog;
-        private Progress<float> _progress;
+        private LAAnimationView _animationView;
+        private UIView _backgroundView;
+        private Action _dismissDialogAction;
         private bool _isIndeterminate;
+        private static bool _isVisible;
+        private MaskType _maskType;
+        private float _progress;
+        private UILabel _statusLabel;
+        private StatusTextPosition _statusTextPosition;
+        private UITapGestureRecognizer _tapGestureRecognizer;
         private Timer _timer;
         private UIViewController _vc;
-        private UILabel _label;
-        private UITapGestureRecognizer _tapGestureRecognizer;
-        private UIView _backgroundView;
+        private Action _cancelCallback;
+        private string _dismissDescription;
+        public static LottieDialog Instance => _dialog ?? (_dialog = new LottieDialog());
 
-        public void ShowDialog(NSUrl nsUrl, bool isIndeterminate, Progress<float> progress, TimeSpan? dialogTimeOut = null, MaskType maskType = MaskType.Black)
+        public async Task ShowDialog(NSUrl url, MaskType maskType, float progress,
+            bool isIndeterminate = true,
+            StatusTextPosition statusTextPosition = StatusTextPosition.Bottom, string status = null,
+            string dismissDescription = null,
+            TimeSpan? timeout = null, Action cancelCallback = null, Action dismissCallback = null)
         {
             _progress = progress;
             _isIndeterminate = isIndeterminate;
-            if (dialogTimeOut != null)
-            {
-                _timer = new Timer(state => DismissDialog(), null, dialogTimeOut.Value, TimeSpan.FromSeconds(1));
-            }
+            _dismissDialogAction = dismissCallback;
+            _cancelCallback = cancelCallback;
+            _maskType = maskType;
+            _statusTextPosition = statusTextPosition;
+            _dismissDescription = dismissDescription;
 
-            _animationView = new LAAnimationView(nsUrl);
-            _label = new UILabel();
-            _backgroundView = new UIView();
+            if (!_isVisible)
+            {
+                _animationView = new LAAnimationView(url);
+                _statusLabel = new UILabel();
+                _backgroundView = new UIView();
+                SetupView();
+                PresentDialog();
+            }
 
             if (!_isIndeterminate)
             {
-                _progress.ProgressChanged += OnProgressChanged;
+                _animationView.LoopAnimation = false;
+                _animationView.AnimationProgress = _progress;
+                if (_progress > 1)
+                {
+                    await DismissDialog();
+                }
             }
             else
             {
@@ -45,98 +66,95 @@ namespace LottieDialogs.iOS
                 _animationView.Play();
             }
 
-            UIApplication.SharedApplication.InvokeOnMainThread(() =>
+            if (timeout != null)
             {
-                var window = UIApplication.SharedApplication.KeyWindow;
-                ModalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
-                ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
-                
-                _vc = window.RootViewController;
-                while (_vc.PresentedViewController != null)
+                _timer = new Timer(async state => await DismissDialog(), null, timeout.Value, TimeSpan.FromSeconds(1));
+            }
+
+            _statusLabel.Text = status;
+            if (cancelCallback != null)
+            {
+                _tapGestureRecognizer = new UITapGestureRecognizer(async () =>
                 {
-                    _vc = _vc.PresentedViewController;
-                }
-                
-                _vc.PresentViewController(this, true, null);
-            });
-
-            _tapGestureRecognizer = new UITapGestureRecognizer(DismissDialog);
-            View.AddGestureRecognizer(_tapGestureRecognizer);
-            View.Alpha = 0.01f;
-            SetupView();
-        }
-
-        private void OnProgressChanged(object sender, float progress)
-        {
-            _animationView.AnimationProgress = progress;
-            if (progress >= 1)
-            {
-                DismissDialog();
+                    await DismissDialog();
+                    cancelCallback.Invoke();
+                });
+                View.AddGestureRecognizer(_tapGestureRecognizer);
             }
         }
 
-        public void DismissDialog()
+        private void PresentDialog()
         {
-            _progress.ProgressChanged -= OnProgressChanged;
-            _timer?.Dispose();
-            _animationView.Pause();
-            _label.RemoveFromSuperview();
-            _label?.Dispose();
-            _animationView.RemoveFromSuperview();
-            _animationView?.Dispose();
-            View.RemoveGestureRecognizer(_tapGestureRecognizer);
-            InvokeOnMainThread(() =>
+            var window = UIApplication.SharedApplication.KeyWindow;
+            ModalPresentationStyle = UIModalPresentationStyle.OverFullScreen;
+            ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
+            _vc = window.RootViewController;
+            if (_vc.PresentedViewController != null && !Equals(_vc.PresentedViewController, this))
             {
-                UIView.Animate(0.3f, 0, UIViewAnimationOptions.CurveEaseOut, () =>
+                _vc = _vc.PresentedViewController;
+            }
+            BeginInvokeOnMainThread(() =>
+            {
+                _isVisible = true;
+                if ((_vc.PresentedViewController == null) ||
+                    _vc.PresentedViewController != null && !_vc.PresentedViewController.Equals(this))
                 {
-                    View.Alpha = 0;
-                }, () => DismissViewController(false, null));
+                    _vc.PresentViewController(this, true, null);
+                }
             });
         }
 
-        public void UpdateStatusText(string s)
+        public async Task DismissDialog()
         {
-            _label.Text = s;
+            TaskCompletionSource<bool> dismissTaskCompletionSource = new TaskCompletionSource<bool>();
+            BeginInvokeOnMainThread(() =>
+            {
+                DismissViewController(true, () =>
+                {
+                    _animationView.Pause();
+                    _backgroundView.RemoveFromSuperview();
+                    _statusLabel.RemoveFromSuperview();
+                    _animationView.RemoveFromSuperview();
+                    _statusLabel?.Dispose();
+                    _timer?.Dispose();
+                    _animationView?.Dispose();
+                    _isVisible = false;
+                    _dismissDialogAction?.Invoke();
+                    dismissTaskCompletionSource.SetResult(true);
+                    if (_cancelCallback != null)
+                    {
+                        View.RemoveGestureRecognizer(_tapGestureRecognizer);
+                    }
+                });
+            });
+            await dismissTaskCompletionSource.Task;
         }
 
-        public void SetupView()
+        private void SetupView()
         {
-            _backgroundView.Layer.CornerRadius = 10;
-            _backgroundView.BackgroundColor = UIColor.White;
-            _backgroundView.ClipsToBounds = true;
-            Add(_backgroundView);
-            _backgroundView.Add(_label);
-            _backgroundView.Add(_animationView);
-
-            View.AddConstraints(new FluentLayout[]
+            switch (_statusTextPosition)
             {
-                _backgroundView.Width().EqualTo(120),
-                _backgroundView.Height().EqualTo(120),
-                _backgroundView.WithSameCenterX(View),
-                _backgroundView.WithSameCenterY(View),
+                case StatusTextPosition.Bottom:
+                    View.TopHeaderDialog(_backgroundView, _animationView, _statusLabel, _maskType);
+                    break;
+                case StatusTextPosition.Center:
+                    View.CenterHeaderDialog(_backgroundView, _statusLabel, _maskType);
+                    break;
+                case StatusTextPosition.Top:
+                    View.TopHeaderDialog(_backgroundView, _animationView, _statusLabel, _maskType);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void UpdateProgress(float progress, string status)
+        {
+            BeginInvokeOnMainThread(() =>
+            {
+                _statusLabel.Text = status;
+                _animationView.AnimationProgress = progress;
             });
-
-            _backgroundView.AddConstraints(new FluentLayout[]
-            {
-                _label.Width().LessThanOrEqualTo(150),
-                _label.Height().LessThanOrEqualTo(40),
-                _label.WithSameCenterX(_backgroundView),
-                _label.AtTopOf(_backgroundView, 10),
-                _animationView.WithSameCenterX(_backgroundView),
-                _animationView.Height().EqualTo(75),
-                _animationView.Width().EqualTo(75),
-                _animationView.Below(_label, 0),
-            });
-
-            _backgroundView.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
-            View.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
-
-            View.BackgroundColor = new UIColor(0, 0, 0, 0.7f);
-
-            UIView.Animate(0.3f, 0, UIViewAnimationOptions.CurveEaseOut, () =>
-            {
-                View.Alpha = 1;
-            }, null);
         }
     }
 }

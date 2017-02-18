@@ -33,11 +33,11 @@ namespace LottieDialogs.Sample.Android
 
             for (int i = 0; i <= 100; i++)
             {
-                LottieDialogs.Android.LottieDialog.Shared.ShowProgressDialog(this, stream2, MaskType.Clear, i, false, ToastPosition.Bottom, "Progress: " + i + "%", "");
+                LottieDialogs.Android.LottieDialog.Instance.ShowProgressDialog(this, stream2, MaskType.Clear, i, false, StatusTextPosition.Bottom, "Progress: " + i + "%", "");
                 await Task.Delay(50);
                 if (i == 100)
                 {
-                    LottieDialogs.Android.LottieDialog.Shared.Dismiss(this);
+                    LottieDialogs.Android.LottieDialog.Instance.Dismiss(this);
                     _progress.IsAnimating = false;
                 }
             }

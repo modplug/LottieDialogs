@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\LottieProgressView.cs" />
+    <Compile Include="Extensions\LottieDialogViewExtensions.cs" />
     <Compile Include="LottieDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

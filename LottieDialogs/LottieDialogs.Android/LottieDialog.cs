@@ -17,20 +17,20 @@ namespace LottieDialogs.Android
 {
     public class LottieDialog
     {
-        private static LottieDialog _shared;
+        private static LottieDialog _instance;
 
         private readonly object _dialogLock = new object();
         private readonly ManualResetEvent _waitDismiss = new ManualResetEvent(false);
         private LottieAnimationView _animationView;
         private TextView _statusView;
 
-        public static LottieDialog Shared => _shared ?? (_shared = new LottieDialog());
+        public static LottieDialog Instance => _instance ?? (_instance = new LottieDialog());
 
         public Dialog CurrentDialog { get; private set; }
 
         public void ShowProgressDialog(Context context, Stream stream, MaskType maskType, float progress,
             bool isIndeterminate = true,
-            ToastPosition toastPosition = ToastPosition.Bottom, string status = null, string dismissDescription = null,
+            StatusTextPosition statusTextPosition = StatusTextPosition.Bottom, string status = null, string dismissDescription = null,
             TimeSpan? timeout = null, Action clickCallback = null, Action dismissCallback = null)
         {
             if (!timeout.HasValue)

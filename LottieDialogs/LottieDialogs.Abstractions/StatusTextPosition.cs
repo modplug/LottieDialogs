@@ -1,6 +1,6 @@
 ﻿namespace LottieDialogs.Abstractions
 {
-    public enum ToastPosition
+    public enum StatusTextPosition
     {
         Bottom = 1,
         Center,

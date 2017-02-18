@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using CoreGraphics;
 using Foundation;
+using LottieDialogs.Abstractions;
 using LottieDialogs.iOS;
-using LottieDialogs.iOS.Controls;
 using UIKit;
 
 namespace LottieDialogs.Sample.iOS
 {
     public partial class ViewController : UIViewController
     {
+        private CancellationTokenSource _cts = new CancellationTokenSource();
         public ViewController(IntPtr handle) : base(handle)
         {
         }
@@ -16,38 +19,36 @@ namespace LottieDialogs.Sample.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            var nsUrl = NSUrl.FromFilename("TwitterHeart.json");
-            LottieProgressView  progressView = new LottieProgressView(new CGRect(0, 0, 100, 100), nsUrl);
             UIButton button = new UIButton(new CGRect(0, 0, 100, 50));
             button.SetTitle("Show dialog", UIControlState.Normal);
             button.BackgroundColor = UIColor.Black;
             button.TouchUpInside += (sender, args) => ShowDialog();
-            //progressView.HidesWhenStopped = true;
-            //progressView.StartAnimating();
-            //Add(progressView);
             Add(button);
-            var tapGestureRecognizer = new UITapGestureRecognizer(ShowDialog);
-            progressView.AddGestureRecognizer(tapGestureRecognizer);
         }
 
-        public override void ViewDidAppear(bool animated)
+        private async void ShowDialog()
         {
-            
-            base.ViewDidAppear(animated);
-        }
-
-        private static void ShowDialog()
-        {
-            var stream = NSUrl.FromFilename("TwitterHeart.json").DataRepresentation.AsStream();
             var url = NSUrl.FromFilename("TwitterHeart.json");
-            LottieDialog.Instance.ShowDialog(url, true, new Progress<float>());
-            LottieDialog.Instance.UpdateStatusText("Loading...");
+            await LottieDialog.Instance.ShowDialog(url, MaskType.Clear, 0, false, StatusTextPosition.Center, "Progress: " + 0 + "%", "", TimeSpan.FromSeconds(2), CancelCallback);
+            for (var i = 0; i <= 100; i++)
+            {
+                if (_cts.IsCancellationRequested)
+                {
+                    _cts = new CancellationTokenSource();
+                    break;
+                }
+                LottieDialog.Instance.UpdateProgress((float)i / 100, "Progress: " + i + "%");
+                await Task.Delay(50);
+                if (i == 100)
+                {
+                    await LottieDialog.Instance.DismissDialog();
+                }
+            }
         }
 
-        public override void DidReceiveMemoryWarning()
+        private void CancelCallback()
         {
-            base.DidReceiveMemoryWarning();
-            // Release any cached data, images, etc that aren't in use.
+            _cts.Cancel();
         }
     }
 }
