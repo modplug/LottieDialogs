@@ -36,7 +36,7 @@ namespace LottieDialogs.Sample.iOS
         {
             var index = _random.Next(0, _animations.Count);
             var url = NSUrl.FromFilename(_animations[index]);
-            await LottieDialog.Instance.ShowDialog(url, MaskType.Black, 0, true, StatusTextPosition.Bottom, "Progress: " + 0 + "%", "", null, CancelCallback);
+            await LottieDialog.Instance.ShowDialog(url, MaskType.Black, 0, true, DialogType.AnimationOnly, "Progress: " + 0 + "%", "", null, CancelCallback);
             for (var i = 0; i <= 100; i++)
             {
                 if (_cts.IsCancellationRequested)

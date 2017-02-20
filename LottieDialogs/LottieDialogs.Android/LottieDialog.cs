@@ -30,7 +30,7 @@ namespace LottieDialogs.Android
 
         public void ShowProgressDialog(Context context, Stream stream, MaskType maskType, float progress,
             bool isIndeterminate = true,
-            StatusTextPosition statusTextPosition = StatusTextPosition.Bottom, string status = null, string dismissDescription = null,
+            DialogType dialogType = DialogType.BottomStatus, string status = null, string dismissDescription = null,
             TimeSpan? timeout = null, Action clickCallback = null, Action dismissCallback = null)
         {
             if (!timeout.HasValue)
@@ -61,22 +61,25 @@ namespace LottieDialogs.Android
                         var inflater = LayoutInflater.FromContext(context);
 
                         View view;
-                        switch (statusTextPosition)
+                        switch (dialogType)
                         {
-                            case StatusTextPosition.Bottom:
+                            case DialogType.BottomStatus:
                                 view = inflater.Inflate(Resource.Layout.bottom_header_progress_dialog, null);
                                 _statusView = view.FindViewById<TextView>(Resource.Id.bottom_textViewStatus);
                                 break;
-                            case StatusTextPosition.Center:
+                            case DialogType.TextOnly:
                                 view = inflater.Inflate(Resource.Layout.center_header_progress_dialog, null);
                                 _statusView = view.FindViewById<TextView>(Resource.Id.center_textViewStatus);
                                 break;
-                            case StatusTextPosition.Top:
+                            case DialogType.TopStatus:
                                 view = inflater.Inflate(Resource.Layout.top_header_progress_dialog, null);
                                 _statusView = view.FindViewById<TextView>(Resource.Id.top_textViewStatus);
                                 break;
+                            case DialogType.AnimationOnly:
+                                view = inflater.Inflate(Resource.Layout.animation_only_progress_dialog, null);
+                                break;
                             default:
-                                throw new ArgumentOutOfRangeException(nameof(statusTextPosition), statusTextPosition, null);
+                                throw new ArgumentOutOfRangeException(nameof(dialogType), dialogType, null);
                         }
                         
 
@@ -103,19 +106,19 @@ namespace LottieDialogs.Android
                         {
                             case MaskType.None:
                                 view.SetBackgroundResource(Resource.Drawable.roundedbgdark);
-                                _statusView.SetTextColor(Color.White);
+                                _statusView?.SetTextColor(Color.White);
                                 break;
                             case MaskType.Clear:
                                 view.SetBackgroundColor(Color.Transparent);
-                                _statusView.SetTextColor(Color.Black);
+                                _statusView?.SetTextColor(Color.Black);
                                 break;
                             case MaskType.Black:
                                 view.SetBackgroundResource(Resource.Drawable.roundedbg_white);
-                                _statusView.SetTextColor(Color.Black);
+                                _statusView?.SetTextColor(Color.Black);
                                 break;
                             case MaskType.Gradient:
                                 view.SetBackgroundResource(Resource.Drawable.roundedbg_white);
-                                _statusView.SetTextColor(Color.Black);
+                                _statusView?.SetTextColor(Color.Black);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(maskType), maskType, null);
@@ -155,7 +158,10 @@ namespace LottieDialogs.Android
                     Application.SynchronizationContext.Send(state =>
                     {
                         _animationView.Progress = progress / 100;
-                        _statusView.Text = status ?? "";
+                        if (_statusView != null)
+                        {
+                            _statusView.Text = status ?? "";
+                        }
                     }, null);
                 }
             }

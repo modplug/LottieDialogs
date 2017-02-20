@@ -20,7 +20,7 @@ namespace LottieDialogs.iOS
         private MaskType _maskType;
         private float _progress;
         private UILabel _statusLabel;
-        private StatusTextPosition _statusTextPosition;
+        private DialogType _dialogType;
         private UITapGestureRecognizer _tapGestureRecognizer;
         private Timer _timer;
         private UIViewController _vc;
@@ -30,7 +30,7 @@ namespace LottieDialogs.iOS
 
         public async Task ShowDialog(NSUrl url, MaskType maskType, float progress,
             bool isIndeterminate = true,
-            StatusTextPosition statusTextPosition = StatusTextPosition.Bottom, string status = null,
+            DialogType dialogType = DialogType.BottomStatus, string status = null,
             string dismissDescription = null,
             TimeSpan? timeout = null, Action cancelCallback = null, Action dismissCallback = null)
         {
@@ -39,7 +39,7 @@ namespace LottieDialogs.iOS
             _dismissDialogAction = dismissCallback;
             _cancelCallback = cancelCallback;
             _maskType = maskType;
-            _statusTextPosition = statusTextPosition;
+            _dialogType = dialogType;
             _dismissDescription = dismissDescription;
 
             if (!_isVisible)
@@ -132,19 +132,23 @@ namespace LottieDialogs.iOS
 
         private void SetupView()
         {
-            switch (_statusTextPosition)
+            switch (_dialogType)
             {
-                case StatusTextPosition.Bottom:
+                case DialogType.BottomStatus:
                     View.TopHeaderDialog(_backgroundView, _animationView, _statusLabel, _maskType);
                     break;
-                case StatusTextPosition.Center:
+                case DialogType.TextOnly:
                     View.CenterHeaderDialog(_backgroundView, _statusLabel, _maskType);
                     break;
-                case StatusTextPosition.Top:
-                    View.TopHeaderDialog(_backgroundView, _animationView, _statusLabel, _maskType);
+                case DialogType.TopStatus:
+                    View.BottomHeaderDialog(_backgroundView, _animationView, _statusLabel, _maskType);
+                    break;
+                case DialogType.AnimationOnly:
+                    View.AnimationOnlyDialog(_backgroundView, _animationView, _maskType);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    View.AnimationOnlyDialog(_backgroundView, _animationView, _maskType);
+                    break;
             }
         }
 

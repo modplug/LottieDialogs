@@ -113,6 +113,37 @@ namespace LottieDialogs.iOS.Extensions
             return parent;
         }
 
+        public static UIView AnimationOnlyDialog(this UIView parent, UIView backgroundView, LAAnimationView animationView, MaskType maskType)
+        {
+            parent.BackgroundColor = GetBackgroundColorFromMaskType(maskType);
+            backgroundView.Layer.CornerRadius = CornerRadius;
+            backgroundView.BackgroundColor = maskType == MaskType.Clear ? SemiTransparentBlack : UIColor.White;
+            backgroundView.ClipsToBounds = true;
+            parent.Add(backgroundView);
+            backgroundView.Add(animationView);
+            backgroundView.Add(animationView);
+
+            parent.AddConstraints(new FluentLayout[]
+            {
+                backgroundView.Width().EqualTo(120),
+                backgroundView.Height().EqualTo(120),
+                backgroundView.WithSameCenterX(parent),
+                backgroundView.WithSameCenterY(parent),
+            });
+
+            backgroundView.AddConstraints(new FluentLayout[]
+            {
+                animationView.WithSameCenterX(backgroundView),
+                animationView.WithSameCenterY(backgroundView),
+                animationView.Height().EqualTo(100),
+                animationView.Width().EqualTo(100),
+            });
+
+            backgroundView.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
+            parent.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
+            return parent;
+        }
+
         private static UIColor GetBackgroundColorFromMaskType(MaskType maskType)
         {
             switch (maskType)

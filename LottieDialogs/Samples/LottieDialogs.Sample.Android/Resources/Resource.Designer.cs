@@ -38,6 +38,7 @@ namespace LottieDialogs.Sample.Android
 			global::LottieDialogs.Android.Resource.Id.lottieAnimationView = global::LottieDialogs.Sample.Android.Resource.Id.lottieAnimationView;
 			global::LottieDialogs.Android.Resource.Id.lottie_layer_name = global::LottieDialogs.Sample.Android.Resource.Id.lottie_layer_name;
 			global::LottieDialogs.Android.Resource.Id.top_textViewStatus = global::LottieDialogs.Sample.Android.Resource.Id.top_textViewStatus;
+			global::LottieDialogs.Android.Resource.Layout.animation_only_progress_dialog = global::LottieDialogs.Sample.Android.Resource.Layout.animation_only_progress_dialog;
 			global::LottieDialogs.Android.Resource.Layout.bottom_header_progress_dialog = global::LottieDialogs.Sample.Android.Resource.Layout.bottom_header_progress_dialog;
 			global::LottieDialogs.Android.Resource.Layout.center_header_progress_dialog = global::LottieDialogs.Sample.Android.Resource.Layout.center_header_progress_dialog;
 			global::LottieDialogs.Android.Resource.Layout.top_header_progress_dialog = global::LottieDialogs.Sample.Android.Resource.Layout.top_header_progress_dialog;
@@ -139,16 +140,19 @@ namespace LottieDialogs.Sample.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int bottom_header_progress_dialog = 2130903040;
+			public const int animation_only_progress_dialog = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int center_header_progress_dialog = 2130903041;
+			public const int bottom_header_progress_dialog = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int Main = 2130903042;
+			public const int center_header_progress_dialog = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int top_header_progress_dialog = 2130903043;
+			public const int Main = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int top_header_progress_dialog = 2130903044;
 			
 			static Layout()
 			{

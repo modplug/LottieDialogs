@@ -103,13 +103,16 @@ namespace LottieDialogs.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public static int bottom_header_progress_dialog = 2130903040;
+			public static int animation_only_progress_dialog = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public static int center_header_progress_dialog = 2130903041;
+			public static int bottom_header_progress_dialog = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public static int top_header_progress_dialog = 2130903042;
+			public static int center_header_progress_dialog = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public static int top_header_progress_dialog = 2130903043;
 			
 			static Layout()
 			{
