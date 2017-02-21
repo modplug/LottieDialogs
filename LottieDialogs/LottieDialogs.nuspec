@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>LottieDialogs</id>
+        <version>0.0.5.8</version>
+        <title>Lottie Dialogs for Xamarin</title>
+        <authors>Erlend Angelsen</authors>
+        <owners>Erlend Angelsen</owners>
+        <licenseUrl>https://github.com/modplug/LottieDialogs/blob/master/LottieDialogs/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/modplug/LottieDialogs</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Lottie Dialogs for Xamarin</description>
+        <summary>Show dialogs with After Effects animations natively on iOS and Android</summary>
+        <tags>xamarin, monodroid, C#, xamarin, Android, Lottie, animation, airbnb, dialog</tags>
+		<dependencies>
+		<group targetFramework="MonoAndroid">
+          <dependency id="Com.Airbnb.Android.Lottie" version="1.0.0.7" />
+		</group>
+	   <group targetFramework="Xamarin.iOS">
+          <dependency id="Cirrious.FluentLayout" version="2.5.0" />
+		  <dependency id="Com.Airbnb.iOS.Lottie" version="1.0.0.7" />
+       </group>
+	   </dependencies>
+    </metadata>
+    
+	<files>
+		<file src="LottieDialogs.iOS\bin\Release\LottieDialogs.iOS.dll" target="lib\xamarinios\LottieDialogs.iOS.dll" />
+        <file src="LottieDialogs.Android\bin\Release\LottieDialogs.Android.dll" target="lib\monodroid\LottieDialogs.Android.dll" />
+		<file src="LottieDialogs.Abstractions\bin\Release\LottieDialogs.Abstractions.dll" target="lib\xamarinios\LottieDialogs.Abstractions.dll"/>
+    </files>
+</package>
